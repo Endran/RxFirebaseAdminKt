@@ -12,6 +12,9 @@ plugins {
     id 'com.github.kt3k.coveralls' version '2.6.3'
 }
 
+apply plugin: 'maven'
+group = 'com.github.Endran'
+
 jacocoTestReport {
     reports {
         xml.enabled = true
@@ -24,5 +27,5 @@ dependencies {
     compileOnly "io.reactivex:rxkotlin:${rxKotlinVersion}"
     compileOnly "com.google.firebase:firebase-admin:${firebaseAdminVersion}"
 
-    compile "com.github.endran.RxFirebaseAdmin:RxFirebaseAdmin:${rxFirebaseAdminVersion}"
+    compile "com.github.endran.RxFirebaseAdmin:${rxFirebaseAdminVersion}"
 }
