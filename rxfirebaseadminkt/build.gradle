@@ -1,0 +1,28 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+}
+
+plugins {
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.6.3'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+dependencies {
+    compileOnly "io.reactivex:rxjava:${rxJavaVersion}"
+    compileOnly "io.reactivex:rxkotlin:${rxKotlinVersion}"
+    compileOnly "com.google.firebase:firebase-admin:${firebaseAdminVersion}"
+
+    compile "com.github.endran.RxFirebaseAdmin:RxFirebaseAdmin:${rxFirebaseAdminVersion}"
+}
