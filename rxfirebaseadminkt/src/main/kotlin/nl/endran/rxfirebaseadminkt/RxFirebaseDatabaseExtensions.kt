@@ -16,99 +16,24 @@
 
 package nl.endran.rxfirebaseadminkt
 
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.Query
 import nl.endran.rxfirebaseadmin.DataSnapshotMapper
 import nl.endran.rxfirebaseadmin.RxFirebaseChildEvent
-import nl.endran.rxfirebaseadmin.exceptions.RxFirebaseDataException
+import nl.endran.rxfirebaseadmin.RxFirebaseDatabase
 import rx.Observable
 import rx.functions.Func1
-import rx.subscriptions.Subscriptions
 
 fun Query.observeValueEvent(): Observable<DataSnapshot> {
-    return Observable.create { subscriber ->
-        val valueEventListener = addValueEventListener(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        if (!subscriber.isUnsubscribed) {
-                            subscriber.onNext(dataSnapshot)
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        if (!subscriber.isUnsubscribed) {
-                            subscriber.onError(RxFirebaseDataException(error))
-                        }
-                    }
-                })
-
-        subscriber.add(Subscriptions.create { removeEventListener(valueEventListener) })
-    }
+    return RxFirebaseDatabase.observeValueEvent(this)
 }
 
 fun Query.observeSingleValueEvent(): Observable<DataSnapshot> {
-    return Observable.create { subscriber ->
-        addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (!subscriber.isUnsubscribed) {
-                    subscriber.onNext(dataSnapshot)
-                    subscriber.onCompleted()
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                if (!subscriber.isUnsubscribed) {
-                    subscriber.onError(RxFirebaseDataException(error))
-                }
-            }
-        })
-    }
+    return RxFirebaseDatabase.observeSingleValueEvent(this)
 }
 
 fun Query.observeChildEvent(): Observable<RxFirebaseChildEvent<DataSnapshot>> {
-    return Observable.create { subscriber ->
-        val childEventListener = addChildEventListener(
-                object : ChildEventListener {
-
-                    override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String) {
-                        if (!subscriber.isUnsubscribed) {
-                            subscriber.onNext(
-                                    RxFirebaseChildEvent(dataSnapshot.key, dataSnapshot, previousChildName,
-                                            RxFirebaseChildEvent.EventType.ADDED))
-                        }
-                    }
-
-                    override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String) {
-                        if (!subscriber.isUnsubscribed) {
-                            subscriber.onNext(
-                                    RxFirebaseChildEvent(dataSnapshot.key, dataSnapshot, previousChildName,
-                                            RxFirebaseChildEvent.EventType.CHANGED))
-                        }
-                    }
-
-                    override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                        if (!subscriber.isUnsubscribed) {
-                            subscriber.onNext(RxFirebaseChildEvent(dataSnapshot.key, dataSnapshot,
-                                    RxFirebaseChildEvent.EventType.REMOVED))
-                        }
-                    }
-
-                    override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String) {
-                        if (!subscriber.isUnsubscribed) {
-                            subscriber.onNext(
-                                    RxFirebaseChildEvent(dataSnapshot.key, dataSnapshot, previousChildName,
-                                            RxFirebaseChildEvent.EventType.MOVED))
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        if (!subscriber.isUnsubscribed) {
-                            subscriber.onError(RxFirebaseDataException(error))
-                        }
-                    }
-                })
-
-        subscriber.add(Subscriptions.create { removeEventListener(childEventListener) })
-    }
+    return RxFirebaseDatabase.observeChildEvent(this)
 }
 
 fun <T> Query.observeValueEvent(clazz: Class<T>): Observable<T> {
