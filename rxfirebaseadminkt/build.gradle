@@ -27,5 +27,5 @@ dependencies {
     compileOnly "io.reactivex:rxkotlin:${rxKotlinVersion}"
     compileOnly "com.google.firebase:firebase-admin:${firebaseAdminVersion}"
 
-    compile "com.github.endran.RxFirebaseAdmin:${rxFirebaseAdminVersion}"
+    compile "com.github.endran:RxFirebaseAdmin:${rxFirebaseAdminVersion}"
 }
