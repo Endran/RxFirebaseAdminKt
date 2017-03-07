@@ -28,36 +28,36 @@ fun Query.observeValueEvent(): Observable<DataSnapshot> {
     return RxFirebaseDatabase.observeValueEvent(this)
 }
 
+fun <T> Query.observeValueEvent(clazz: Class<T>): Observable<T> {
+    return observeValueEventMapped(DataSnapshotMapper.of(clazz))
+}
+
+fun <T> Query.observeValueEventMapped(mapper: Func1<in DataSnapshot, out T>): Observable<T> {
+    return observeValueEvent().map(mapper)
+}
+
 fun Query.observeSingleValueEvent(): Observable<DataSnapshot> {
     return RxFirebaseDatabase.observeSingleValueEvent(this)
+}
+
+fun <T> Query.observeSingleValueEvent(clazz: Class<T>): Observable<T> {
+    return observeSingleValueEventMapped(DataSnapshotMapper.of(clazz))
+}
+
+fun <T> Query.observeSingleValueEventMapped(
+        mapper: Func1<in DataSnapshot, out T>): Observable<T> {
+    return observeSingleValueEvent().map(mapper)
 }
 
 fun Query.observeChildEvent(): Observable<RxFirebaseChildEvent<DataSnapshot>> {
     return RxFirebaseDatabase.observeChildEvent(this)
 }
 
-fun <T> Query.observeValueEvent(clazz: Class<T>): Observable<T> {
-    return observeValueEvent(DataSnapshotMapper.of(clazz))
-}
-
-fun <T> Query.observeSingleValueEvent(clazz: Class<T>): Observable<T> {
-    return observeSingleValueEvent(DataSnapshotMapper.of(clazz))
-}
-
 fun <T> Query.observeChildEvent(clazz: Class<T>): Observable<RxFirebaseChildEvent<T>> {
-    return observeChildEvent(DataSnapshotMapper.ofChildEvent(clazz))
+    return observeChildEventMapped(DataSnapshotMapper.ofChildEvent(clazz))
 }
 
-fun <T> Query.observeValueEvent(mapper: Func1<in DataSnapshot, out T>): Observable<T> {
-    return observeValueEvent().map(mapper)
-}
-
-fun <T> Query.observeSingleValueEvent(
-        mapper: Func1<in DataSnapshot, out T>): Observable<T> {
-    return observeSingleValueEvent().map(mapper)
-}
-
-fun <T> Query.observeChildEvent(
+fun <T> Query.observeChildEventMapped(
         mapper: Func1<in RxFirebaseChildEvent<DataSnapshot>, out RxFirebaseChildEvent<T>>): Observable<RxFirebaseChildEvent<T>> {
     return observeChildEvent().map(mapper)
 }
